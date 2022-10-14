@@ -6,3 +6,4 @@ appsettings.json
 *.db
 skinet.db*
 .idea
+*.rdb
