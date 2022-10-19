@@ -18,9 +18,8 @@ public class AccountController : BaseApiController
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
 
-    public AccountController(UserManager<AppUser> userManager, 
+    public AccountController(UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper
-        
     )
     {
         _userManager = userManager;
@@ -34,7 +33,7 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
-        
+
         return new UserDto
         {
             Email = user.Email,
@@ -55,7 +54,7 @@ public class AccountController : BaseApiController
     {
         var user = await _userManager.FindByEmailWithAddressAsync(User);
 
-        return _mapper.Map<Address, AddressDto>(user.Address);
+        return _mapper.Map<AddressDto>(user.Address);
     }
 
     [Authorize]
@@ -64,11 +63,11 @@ public class AccountController : BaseApiController
     {
         var user = await _userManager.FindByEmailWithAddressAsync(User);
 
-        user.Address = _mapper.Map<AddressDto, Address>(address);
+        user.Address = _mapper.Map<Address>(address);
 
         var result = await _userManager.UpdateAsync(user);
 
-        if (result.Succeeded) return Ok(_mapper.Map<Address, AddressDto>(user.Address));
+        if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
 
         return BadRequest("Problem updating the user");
     }
@@ -104,6 +103,7 @@ public class AccountController : BaseApiController
                     Errors = new[] { "Email address is in use" }
                 });
         }
+
         var user = new AppUser
         {
             DisplayName = registerDto.DisplayName,
@@ -122,6 +122,4 @@ public class AccountController : BaseApiController
             Email = user.Email
         };
     }
-    
-    
 }
